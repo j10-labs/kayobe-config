@@ -5,59 +5,97 @@
 # Network role to network mappings.
 
 # Name of the network used for admin access to the overcloud
-#admin_oc_net_name:
+admin_oc_net_name: hardware
 
 # Name of the network used by the seed to manage the bare metal overcloud
 # hosts via their out-of-band management controllers.
-#oob_oc_net_name:
+oob_oc_net_name: hardware
 
 # Name of the network used by the seed to provision the bare metal overcloud
 # hosts.
-#provision_oc_net_name:
+provision_oc_net_name: hardware
 
 # Name of the network used by the overcloud hosts to manage the bare metal
 # compute hosts via their out-of-band management controllers.
-#oob_wl_net_name:
+oob_wl_net_name: hardware
 
 # Name of the network used by the overcloud hosts to provision the bare metal
 # workload hosts.
-#provision_wl_net_name:
+provision_wl_net_name: hardware
 
 # Name of the network used to expose the internal OpenStack API endpoints.
-#internal_net_name:
+internal_net_name: internal
 
 # List of names of networks used to provide external network access via
 # Neutron.
 # Deprecated name: external_net_name
 # If external_net_name is defined, external_net_names will default to a list
 # containing one item, external_net_name.
-#external_net_names:
+external_net_names:
+  - provider
 
 # Name of the network used to expose the public OpenStack API endpoints.
-#public_net_name:
+public_net_name: public
 
 # Name of the network used by Neutron to carry tenant overlay network traffic.
-#tunnel_net_name:
+tunnel_net_name: overlay
 
 # Name of the network used to carry storage data traffic.
-#storage_net_name:
+storage_net_name: storage
 
 # Name of the network used to carry storage management traffic.
-#storage_mgmt_net_name:
+storage_mgmt_net_name: storagemgmt
 
 # Name of the network used to carry swift storage data traffic.
-#swift_storage_net_name:
+swift_storage_net_name: swiftdata
 
 # Name of the network used to carry swift storage replication traffic.
-#swift_storage_replication_net_name:
+swift_storage_replication_net_name: swiftinternal
 
 # Name of the network used to perform hardware introspection on the bare metal
 # workload hosts.
-#inspection_net_name:
+inspection_net_name: hardware
 
 # Name of the network used to perform cleaning on the bare metal workload
 # hosts
-#cleaning_net_name:
+cleaning_net_name: hardware
+
+###############################################################################
+# Network virtual patch link configuration.
+
+# Suffix for Open vSwitch bridge names.
+network_bridge_suffix_ovs: "-os"
+
+# Prefix for virtual patch interface names.
+network_patch_prefix: "ospatch-def-"
+
+# Suffix for virtual patch link interface names when connected towards the
+# physical interface.
+network_patch_suffix_phy: "ospatch-phy-"
+
+# Suffix for virtual patch link interface names when connected towards the
+# OVS bridge.
+network_patch_suffix_ovs: "ospatch-ovs-"
+
+###############################################################################
+# Network routing table configuration.
+
+# List of IP routing tables. Each item should be a dict containing 'id' and
+# 'name' items. These tables will be added to /etc/iproute2/rt_tables.
+#network_route_tables:
+
+###############################################################################
+# Network connectivity check configuration.
+
+# External IP address to check. Default is 8.8.8.8.
+nc_external_ip: 1.1.1.1
+
+# External hostname to check. Default is google.com.
+nc_external_hostname: cloudflare.com
+
+###############################################################################
+# Dummy variable to allow Ansible to accept this file.
+workaround_ansible_issue_8743: yes
 
 ###############################################################################
 # Network definitions.
@@ -79,39 +117,78 @@
 # Further information on the available network attributes is provided in the
 # network configuration reference in the Kayobe documentation.
 
-###############################################################################
-# Network virtual patch link configuration.
+# Each network below has it's own VLAN & subnet. In theory we could over-assign the nets, but that's bound to break things.
+# The 10.1 is done so different AZs could all use this config, but right now that's not used.
+# The gateway for these may be all the same, but this way they are all neatly separated.
+# Similarly the 1xx in VLANs indicates the AZ, but that's also not used so far
+# < 1000 VLANs ARE RESERVED!
 
-# Suffix for Open vSwitch bridge names.
-#network_bridge_suffix_ovs:
+hardware_cidr: 10.1.1.0/24
+internal_cidr: 10.1.2.0/24
+provider_cidr: 10.1.3.0/24
+public_cidr: 10.1.4.0/24
+overlay_cidr: 10.1.5.0/24
+storage_cidr: 10.1.6.0/24
+storagemgmt_cidr: 10.1.7.0/24
+swiftdata_cidr: 10.1.8.0/24
+swiftinternal_cidr: 10.1.9.0/24
 
-# Prefix for virtual patch interface names.
-#network_patch_prefix:
+hardware_allocation_pool_start: 10.1.1.10
+hardware_allocation_pool_end: 10.1.1.254
+internal_allocation_pool_start: 10.1.2.10
+internal_allocation_pool_end: 10.1.2.254
+provider_allocation_pool_start: 10.1.3.10
+provider_allocation_pool_end: 10.1.3.254
+public_allocation_pool_start: 10.1.4.10
+public_allocation_pool_end: 10.1.4.254
+overlay_allocation_pool_start: 10.1.5.10
+overlay_allocation_pool_end: 10.1.5.254
+storage_allocation_pool_start: 10.1.6.10
+storage_allocation_pool_end: 10.1.6.254
+storagemgmt_allocation_pool_start: 10.1.7.10
+storagemgmt_allocation_pool_end: 10.1.7.254
+swiftdata_allocation_pool_start: 10.1.8.10
+swiftdata_allocation_pool_end: 10.1.8.254
+swiftinternal_allocation_pool_start: 10.1.9.10
+swiftinternal_allocation_pool_end: 10.1.9.254
 
-# Suffix for virtual patch link interface names when connected towards the
-# physical interface.
-#network_patch_suffix_phy:
+hardware_gateway: 10.1.1.1
+internal_gateway: 10.1.2.1
+provider_gateway: 10.1.3.1
+public_gateway: 10.1.4.1
+overlay_gateway: 10.1.5.1
+storage_gateway: 10.1.6.1
+storagemgmt_gateway: 10.1.7.1
+swiftdata_gateway: 10.1.8.1
+swiftinternal_gateway: 10.1.9.1
 
-# Suffix for virtual patch link interface names when connected towards the
-# OVS bridge.
-#network_patch_suffix_ovs:
+# Not everyone needs a VIP, but reserve it just in case
+hardware_vip_address: 10.1.1.2
+internal_vip_address: 10.1.2.2
+provider_vip_address: 10.1.3.2
+public_vip_address: 10.1.4.2
+overlay_vip_address: 10.1.5.2
+storage_vip_address: 10.1.6.2
+storagemgmt_vip_address: 10.1.7.2
+swiftdata_vip_address: 10.1.8.2
+swiftinternal_vip_address: 10.1.9.2
 
-###############################################################################
-# Network routing table configuration.
+hardware_vip_address: "hardware.{{ topdomain }}"
+admin_vip_address: "admin.{{ topdomain }}"
+internal_vip_address: "internal.{{ topdomain }}"
+provider_vip_address: "provider.{{ topdomain }}"
+public_vip_address: "public.{{ topdomain }}"
+overlay_vip_address: "overlay.{{ topdomain }}"
+storage_vip_address: "storage.{{ topdomain }}"
+storagemgmt_vip_address: "storagemgmt.{{ topdomain }}"
+swiftdata_vip_address: "swiftdata.{{ topdomain }}"
+swiftinternal_vip_address: "swiftinternal.{{ topdomain }}"
 
-# List of IP routing tables. Each item should be a dict containing 'id' and
-# 'name' items. These tables will be added to /etc/iproute2/rt_tables.
-#network_route_tables:
-
-###############################################################################
-# Network connectivity check configuration.
-
-# External IP address to check. Default is 8.8.8.8.
-#nc_external_ip:
-
-# External hostname to check. Default is google.com.
-#nc_external_hostname:
-
-###############################################################################
-# Dummy variable to allow Ansible to accept this file.
-workaround_ansible_issue_8743: yes
+internal_vlan: 102
+provider_vlan: 103
+public_vlan: 104
+overlay_vlan: 105
+storage_vlan: 106
+storagemgmt_vlan: 107
+swiftdata_vlan: 108
+swiftinternal_vlan: 109

@@ -41,6 +41,8 @@
 # Default is an empty list.
 #apt_repositories:
 
+# TODO: Setup APT Mirror
+
 # Whether to disable repositories in /etc/apt/sources.list. This may be used
 # when replacing the distribution repositories via apt_repositories.
 # Default is false.

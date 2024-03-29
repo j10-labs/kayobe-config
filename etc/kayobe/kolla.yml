@@ -432,7 +432,7 @@
 #kolla_enable_senlin:
 #kolla_enable_skyline:
 #kolla_enable_solum:
-#kolla_enable_swift:
+kolla_enable_swift: true
 #kolla_enable_swift_recon:
 #kolla_enable_swift_s3api:
 #kolla_enable_tacker:

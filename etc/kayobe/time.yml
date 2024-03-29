@@ -5,7 +5,7 @@
 # Timezone.
 
 # Name of the local timezone.
-#timezone:
+timezone: Etc/UTC
 
 ###############################################################################
 # Network Time Protocol (NTP).
@@ -28,7 +28,12 @@
 #       - option: maxsources
 #         val: 3
 #
-#chrony_ntp_servers:
+chrony_ntp_servers:
+  - server: pool.ntp.org
+    type: pool
+    options:
+      - option: maxsources
+        val: 5
 
 # Synchronise hardware clock with system time. Default is true.
 #chrony_rtcsync_enabled:

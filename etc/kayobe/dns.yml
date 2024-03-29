@@ -3,10 +3,14 @@
 # DNS.
 
 # Whether kayobe should configure resolv.conf.
-#resolv_is_managed:
+resolv_is_managed: true
 
 # List of DNS nameservers.
-#resolv_nameservers:
+resolv_nameservers:
+  - "1.1.1.1"
+  - "1.0.0.1"
+  - "2606:4700:4700::1111"
+  - "2606:4700:4700::1001"
 
 # DNS domain suffix.
 #resolv_domain:

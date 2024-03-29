@@ -1,0 +1,10 @@
+base_interface: eth0
+hardware_interface: "{{base_interface }}"
+internal_interface: "{{base_interface }}.102"
+provider_interface: "{{base_interface }}.103"
+public_interface: "{{base_interface }}.104"
+overlay_interface: "{{base_interface }}.105"
+storage_interface: "{{base_interface }}.106"
+storagemgmt_interface: "{{base_interface }}.107"
+swiftdata_interface: "{{base_interface }}.108"
+swiftinternal_interface: "{{base_interface }}.109"
